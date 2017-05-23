@@ -1,0 +1,7 @@
+
+  Each data subdirectory contains a file specifying the location of the trailing
+  edge of the slider as a function of time. Each experiment is identified using
+  the notation in the documentation. SG denotes specific gravity where 1 is the 
+  lowest and 5 is the highest. IS denotes initial submergence where 1 is the 
+  deepest and 5 is the shoalest. See Langford Sue's PhD thesis for further details.
+  
