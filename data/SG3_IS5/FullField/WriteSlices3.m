@@ -5,15 +5,15 @@ load('PosAll_1_31.mat');
 %Zall_WL=ans.Zall_WL/1000;
 %Zall_T=ans.Zall_T;
 
+Zall_Xmod=Zall_Xmod./1000;
+Zall_WL=Zall_WL/1000;
+
 y1=Zall_WL(25,(120:end));
 y2=Zall_WL(40,(120:end));
 y3=Zall_WL(55,(120:end));
 y4=Zall_WL(70,(120:end));
 y5=Zall_WL(85,(120:end));
 y6=Zall_WL(100,(120:end));
-
-Zall_Xmod=Zall_Xmod./1000;
-Zall_WL=Zall_WL/1000;
 
 x=Zall_Xmod(120:end);
 
