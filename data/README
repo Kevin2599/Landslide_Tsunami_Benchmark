@@ -1,6 +1,20 @@
 
-  Each data file specifies the location of the trailing edge of the slider as a
-  function of time. Each experiment is identified using the notation in the 
-  documentation. SG denotes specific gravity where 1 is the  lowest and 5 is the
-  highest. IS denotes initial submergence where 1 is the deepest and 5 is the 
-  shoalest. See Langford Sue's PhD thesis for further details.
+  Data for each experiment is contained in the subdirectories and is identified using
+  the notation in the documentation. SG denotes specific gravity where 1 is the  lowest
+  and 5 is the highest. IS denotes initial submergence where 1 is the deepest and 5 is 
+  the shoalest. See Langford Sue's PhD thesis for further details.
+
+  Within each subdirectory are three main data files and four folders containing MATLAB
+  routines to extract the data. The data file are:
+    
+    TimeTx_SGx_ISy_0p01.dat specifies the location of the trailing edge of the slider as a
+    function of time with timestep 0.01 second.
+    
+    profile_SGx_ISy.dat contains the data to plot the water elevation at specific times
+    as shown in the figures in Appendix C.2 of the thesis. 
+    
+    timeseries_SGx_ISy.dat contains the data to plot the time history of water elevation 
+    at specific sites as shown in the figures in Appendix C.3 of the thesis. 
+    
+    
+    
