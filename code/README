@@ -3,9 +3,10 @@
   This subdirectory contains 2 programs for calculating the bottom elevation
   as a function of time. Both programs read the data file for the location of the 
   trailing edge of the elliptical slider as a function of time, TimeTx.dat. This file
-  could be any of the data files in subdirectory 'data'. The programs contain a
-  driver program that calls a subroutine that could be included in an arbitrary
-  hydrodynamics program.
+  could be any of the data files in subdirectories of the data folder. The file 
+  TimeTx.dat included here is renamed from TimeTx_SG5_IS4_0p01.dat. The programs 
+  contain a driver program that calls a subroutine that could be included in an 
+  arbitrary hydrodynamics program.
   
   Program Landslide_geometry82.f90 calculates the bottom elevation for an elliptical
   slider that replicates the laboratory experiment.

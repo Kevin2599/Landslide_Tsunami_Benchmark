@@ -1,0 +1,7 @@
+
+  This folder contains a spreadsheet that calculates the flume elevation at 1 cm 
+  intervals and a sample grid file composed of square computational cells (finite
+  elements) in a format used by the grid generation program TQGG. This program is 
+  open source and can be obtained from the GitHub repository
+  https://github.com/RaWa99/Landslide_Tsunami_Benchmark.git
+  
