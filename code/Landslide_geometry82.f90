@@ -12,7 +12,7 @@
       real*8, save :: tandip,cosdip,sindip
       real*8, save :: Az, Bz, Cz, Xslide, xmaj2, ymaj2
       real*8, save :: xdif1,xdif2,xdif0
-      real*8, save :: timein(60001),Txin(60001),deg2rad
+      real*8, save :: deg2rad
       real*8, parameter :: SlopeAngle = 15.D0  !initial slope
       real*8, parameter :: zmin = -0.435D0     !float bottom elevation
       real*8, parameter :: xmaj = 0.25D0       !half of the slider length
@@ -30,20 +30,22 @@
       integer :: np,j,jj
       real*8 :: time, xdist(1021),bottom(1021)
       
+! *** set spatial resolution here x=(-0.2m,10m)
       np = 1021
       do j=1,np
         xdist(j)= -0.2 + 0.01D0*dble(j-1)
       enddo
       
-      open(23,file='testbot.dat')
+      open(23,file='testbot82.dat')
       
-      do jj=1,601  !test time loop
+      do jj=1,801  !test time loop t=(0.0 seconds,8.0 seconds)
       
+! *** set time step here
         time = 0.D0 + 0.01D0*dble(jj-1)
       
         call CalcBottomElevation(time,xdist,bottom,np)
       
-!  *** write data in your format here. This is for Tecplot.
+!  *** write data in your format here. These are time slices (zones) for Tecplot.
         write(23,*) 'ZONE'
         write(23,*) 'SOLUTIONTIME=' , time
         do j=1,np
@@ -68,13 +70,15 @@
       real*8 ,intent(in)  :: xdist(np)   !distance(m) from x=0 at intersection of slope and initial water surface
       real*8 ,intent(out) :: bottom(np)  !bottom elevation(m) measured from free surface
 
-      integer :: jj,k1,jn
+      integer :: jj,k1,jn,stat
       integer, save :: jlast
       real*8 :: xcb,zbot,zbot2,xdif,x2new,arg
       real*8 :: BzonAz,CzonAz
-      real*8 :: tx,ty,lx,ly,ox,oy
+      real*8,save :: Tx,Ty,lx,ly,ox,oy
       real*8 :: stheta,ctheta,a2,b2,zmin2
       logical :: start=.true.
+      real*8  :: TxTET(2), TxLoc(2), timein, Txin, Tx0, wt, wt1
+      logical :: SteadySlider=.false., EndofFile = .false.
 
 ! *** Case C1 UCant Flume (15 deg) with elliptical slider
 
@@ -92,26 +96,63 @@
       Az = xmaj2*sindip*sindip + ymaj2*cosdip*cosdip
 
       if(start) then
-        open(51, file='TimeTx.dat')
+        open(51, file='TimeTx.dat') !see data directory for all time vs distance files.
         start = .false.
 ! *** read input location of trailing edge of slider
-        do jj=1,60001
-          READ(51,*) timein(jj), Txin(jj)
+        do jj=1,2
+          READ(51,*,IOSTAT=stat) timein, Txin
+          TxTET(jj) = timein
+          TxLoc(jj) =Txin
+!          READ(51,*) timein(jj), Txin(jj)
         enddo
-        close(51)
-        jlast = 1
+!        close(51)
+!        jlast = 1
       endif
 
 ! *** find Tx for time
-      k1=jlast
-      do jj=k1,60001
-        jlast=jj
-        Tx = Txin(jj)
-        if(Tx.ge.time) exit
-      enddo
+!      k1=jlast
+!      do jj=k1,60001
+!        jlast=jj
+!        Tx = Txin(jj)
+!        if(Tx.ge.time) exit
+!      enddo
 
+      if(.not.SteadySlider) then
+        do while (time.gt.TxTET(2))
+          if (.not.EndOfFile) then
+            TxTET(1) = TxTET(2)
+            TxLoc(1) = TxLoc(2)
+            READ(51,*,IOSTAT=stat) timein, Txin
+            if (stat.ne.0) then
+              EndOfFile = .true.
+              close(51)
+            else
+              TxTET(2) = timein
+              TxLoc(2) =Txin
+            endif
+          else
+! end-of-file encounted
+! Assume surface boundary conditions are constant at the last value from now on
+            write(*,*) 'End of file, steady from now on'
+            SteadySlider = .true.
+            exit
+          endif
+        enddo
+      endif
 
-        
+      Tx0 = 0.0293D0
+
+! do interpolation for TxTET(1) <time < TxTET(2)
+      if(.not.SteadySlider) then
+        if(time.ge.TxTet(1)) then
+          wt = (time-TxTet(1))/(TxTet(2)-TxTet(1))
+          wt1 = 1.-wt
+          Tx =  wt1*TxLoc(1)  + wt*TxLoc(2) + Tx0
+        else
+          Tx =  TxLoc(1) + Tx0
+        endif
+      endif
+
       xslide = Tx + xmaj*cosdip  !slide cg
       xcb = xslide/cosdip
 
